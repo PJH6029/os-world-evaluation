@@ -1,0 +1,106 @@
+{
+  "derivation_rule": "evaluation_examples/test_all.json minus evaluation_examples/test_nogdrive.json at the pinned OSWorld commit",
+  "excluded_count": 8,
+  "excluded_tasks": [
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/0c825995-5b70-4526-b663-113f4c999dd2.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "I'm working on a comprehensive report for our environmental policy review meeting next week. I need to integrate key insights from an important document, which is a guidebook on the Green Economy, where I'm particularly interested in the 'Introduction' section. Could you extract this section and compile them into a new Google Doc named 'environment_policy_report (draft)' under /environment_policy folder? This will significantly aid in our discussion on aligning our environmental policies with sustainable and green economic practices. Thanks!",
+      "related_apps": [
+        "libreoffice_calc",
+        "chrome",
+        "os"
+      ],
+      "task_id": "0c825995-5b70-4526-b663-113f4c999dd2"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/22a4636f-8179-4357-8e87-d1743ece1f81.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Please help me convert the file \"Meeting-Agenda.docx\" to a pdf file and upload to the folder 'meetings' in my google drive.",
+      "related_apps": [
+        "libreoffice_writer",
+        "chrome"
+      ],
+      "task_id": "22a4636f-8179-4357-8e87-d1743ece1f81"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/46407397-a7d5-4c6b-92c6-dbe038b1457b.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Help me export charts, graph or other images from docx files received in email \"Lecture Document\" in Notes folder and upload these png files to the figures/ folder in Google Drive for later use (use numbers to name them).",
+      "related_apps": [
+        "thunderbird",
+        "chrome"
+      ],
+      "task_id": "46407397-a7d5-4c6b-92c6-dbe038b1457b"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/4e9f0faf-2ecc-4ae8-a804-28c9a75d1ddc.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Could you help me extract data in the table from a new invoice uploaded to my Google Drive, then export it to a Libreoffice calc .xlsx file in the desktop?",
+      "related_apps": [
+        "libreoffice_calc",
+        "chrome"
+      ],
+      "task_id": "4e9f0faf-2ecc-4ae8-a804-28c9a75d1ddc"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/78aed49a-a710-4321-a793-b611a7c5b56b.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Could you help me save all attachments of the oldest email in Bills local folders to the attachment/ folder in Google Drive and then move this email to a different folder \"have_seen\" in Local Folders.",
+      "related_apps": [
+        "thunderbird",
+        "chrome"
+      ],
+      "task_id": "78aed49a-a710-4321-a793-b611a7c5b56b"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/897e3b53-5d4d-444b-85cb-2cdc8a97d903.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "I have a LibreOffice Writer file form.docx on the desktop. Help me convert it to PDF format and store the PDF in the forms/ folder in my Google Drive.",
+      "related_apps": [
+        "libreoffice_writer",
+        "chrome"
+      ],
+      "task_id": "897e3b53-5d4d-444b-85cb-2cdc8a97d903"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/a0b9dc9c-fc07-4a88-8c5d-5e3ecad91bcb.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Please help me backup my emails in \"Bills\" folder in Thunderbird and store the .eml files with only subject names to my Google Drive folder called \"emails\".",
+      "related_apps": [
+        "thunderbird",
+        "chrome"
+      ],
+      "task_id": "a0b9dc9c-fc07-4a88-8c5d-5e3ecad91bcb"
+    },
+    {
+      "config_load_error": null,
+      "config_path": "evaluation_examples/examples/multi_apps/b52b40a5-ad70-4c53-b5b0-5650a8387052.json",
+      "domain": "multi_apps",
+      "excluded_reason": "google_drive",
+      "instruction": "Could you help me merge all PDF files in the \"Paper Recommendation\" email attachment in Thunderbird into one file and upload it to attachment_full.pdf in Google Drive?",
+      "related_apps": [
+        "thunderbird",
+        "chrome"
+      ],
+      "task_id": "b52b40a5-ad70-4c53-b5b0-5650a8387052"
+    }
+  ],
+  "osworld_commit": "e8ba8fde29889ae7e4377f6f325d736818434a04",
+  "source_all_manifest": "evaluation_examples/test_all.json",
+  "source_nogdrive_manifest": "evaluation_examples/test_nogdrive.json"
+}

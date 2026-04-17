@@ -1,0 +1,29 @@
+.omx/
+
+# External benchmark checkout and large runtime outputs
+external/
+runs/
+.cache/
+*.log
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# Large generated artifacts. Keep small manifests, indexes, and reports visible.
+artifacts/osworld_revision.json
+artifacts/osworld_overlay_install.json
+artifacts/runs/*/
+!artifacts/runs/.gitkeep
+*.mp4
+*.webm
+*.png
+*.jpg
+*.jpeg
+
+# Local secrets / endpoint overrides
+.env
+.env.*

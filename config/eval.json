@@ -1,0 +1,50 @@
+{
+  "action_space": "pyautogui",
+  "artifact_roots": {
+    "manifests": "artifacts/manifests",
+    "reports": "reports",
+    "run_manifests": "artifacts/runs",
+    "runs": "runs",
+    "trajectory_index": "artifacts/trajectory_index"
+  },
+  "decoding": {
+    "max_tokens": 32768,
+    "temperature": 0.0,
+    "top_p": 0.9
+  },
+  "endpoint_redaction_policy": "Record scheme/host/port/path only; never store API keys or bearer tokens.",
+  "model_id": "Qwen/Qwen3.6-35B-A3B",
+  "observation_type": "screenshot",
+  "osworld": {
+    "commit": "e8ba8fde29889ae7e4377f6f325d736818434a04",
+    "home": "external/OSWorld",
+    "repo_url": "https://github.com/xlang-ai/OSWorld.git"
+  },
+  "provider": {
+    "client_password": "password",
+    "name": "docker",
+    "num_envs": 1,
+    "screen_height": 1080,
+    "screen_width": 1920
+  },
+  "retry_policy": {
+    "environment_failure_retries": 1,
+    "model_action_parse_retries": 0,
+    "prompt_or_harness_changes_require_new_run_id": true
+  },
+  "run": {
+    "max_steps": 15,
+    "sleep_after_execution": 3.0
+  },
+  "sample": {
+    "max_tasks_per_domain": 5,
+    "seed": 36035,
+    "unit": "official test_nogdrive.json domain key; multi_apps remains one category"
+  },
+  "serving": {
+    "api_key_env": "OPENAI_API_KEY",
+    "base_url_env": "OPENAI_BASE_URL",
+    "preferred_backends": ["vllm", "sglang", "transformers"],
+    "recommended_api_key_value_for_local_servers": "EMPTY"
+  }
+}
