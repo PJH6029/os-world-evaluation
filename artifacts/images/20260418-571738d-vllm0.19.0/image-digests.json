@@ -1,6 +1,6 @@
 {
   "build_timestamp": "2026-04-17T17:21:44Z",
-  "git_commit": "unknown",
+  "git_commit": "571738d",
   "images": [
     {
       "digest": "sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
