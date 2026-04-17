@@ -95,3 +95,10 @@ python scripts/analyze_failures.py \
 - Every sampled task is attempted or has `not_run_reason`.
 - Every attempted task has trajectory/index evidence or absence reasons.
 - Report links resolve and marks tags as agent-suggested.
+
+
+## Reproducible container images
+
+See [`docs/reproducible-images.md`](docs/reproducible-images.md) for the public GHCR H200 vLLM serving image and local OSWorld evaluation image workflow.
+
+From this directory, see [`reproducible-images.md`](reproducible-images.md).

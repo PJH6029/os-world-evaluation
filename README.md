@@ -63,3 +63,8 @@ python scripts/sample_osworld_tasks.py --osworld-home /tmp/osworld-official --se
 python scripts/sample_osworld_tasks.py --osworld-home /tmp/osworld-official --seed 36035 --validate-no-gdrive
 sha256sum artifacts/manifests/qwen36_osworld_sample_seed36035.json
 ```
+
+
+## Reproducible container images
+
+See [`docs/reproducible-images.md`](docs/reproducible-images.md) for the public GHCR H200 vLLM serving image and local OSWorld evaluation image workflow.

@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1.7
+
+ARG BASE_IMAGE="ghcr.io/pjh6029/snupi-prod-base:cu124-20260414"
+FROM ${BASE_IMAGE}
+
+ARG BUILD_DATE="unknown"
+ARG VCS_REF="unknown"
+ARG VLLM_VERSION="0.19.0"
+
+USER root
+ENV DEBIAN_FRONTEND=noninteractive \
+    UV_NO_CACHE=1 \
+    PIP_NO_CACHE_DIR=1
+
+LABEL org.opencontainers.image.title="OSWorld H200 vLLM OpenAI server fallback" \
+      org.opencontainers.image.description="Fallback explicit MLXP custom image for serving models on H200 reservations with pinned vLLM" \
+      org.opencontainers.image.source="https://github.com/pjh6029/os-world-evaluation" \
+      org.opencontainers.image.created="${BUILD_DATE}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.version="${VLLM_VERSION}" \
+      ai.snupi.image.role="h200-vllm-serving-fallback" \
+      ai.snupi.vllm.version="${VLLM_VERSION}"
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates curl jq \
+ && rm -rf /var/lib/apt/lists/* \
+ && if ! command -v uv >/dev/null 2>&1; then UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh -c "$(curl -LsSf https://astral.sh/uv/install.sh)"; fi \
+ && uv pip install --system "vllm==${VLLM_VERSION}" "huggingface_hub>=0.24"
+
+COPY images/vllm-h200/serve-vllm.sh /usr/local/bin/serve-vllm.sh
+RUN chmod 0755 /usr/local/bin/serve-vllm.sh
+
+EXPOSE 8000
+ENTRYPOINT ["/usr/local/bin/serve-vllm.sh"]

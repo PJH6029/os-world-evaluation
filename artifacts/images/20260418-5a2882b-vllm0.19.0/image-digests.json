@@ -1,0 +1,25 @@
+{
+  "build_timestamp": "2026-04-17T17:07:19Z",
+  "git_commit": "unknown",
+  "images": [
+    {
+      "base_image": "vllm/vllm-openai:v0.19.0@sha256:7a0f0fdd2771464b6976625c2b2d5dd46f566aa00fbc53eceab86ef50883da90",
+      "digest": "sha256:f3f46251485f03babe8038672f7455e7b03d65d65436703a091a4e6f0cda9b92",
+      "digest_ref": "ghcr.io/pjh6029/osworld-vllm-h200@sha256:f3f46251485f03babe8038672f7455e7b03d65d65436703a091a4e6f0cda9b92",
+      "dockerfile": "images/vllm-h200/Dockerfile",
+      "image": "ghcr.io/pjh6029/osworld-vllm-h200:20260418-5a2882b-vllm0.19.0",
+      "name": "osworld-vllm-h200"
+    },
+    {
+      "base_image": "python:3.12-slim-bookworm@sha256:d97792894a6a4162cae14da44542a83c75e56c77a27b92d58f3f83b7bc961292",
+      "digest": "sha256:dda177c732c257e59e1929bc4ba94733047e05a4fa9b1866c6c3c8172f740452",
+      "digest_ref": "ghcr.io/pjh6029/osworld-eval@sha256:dda177c732c257e59e1929bc4ba94733047e05a4fa9b1866c6c3c8172f740452",
+      "dockerfile": "images/osworld-eval/Dockerfile",
+      "image": "ghcr.io/pjh6029/osworld-eval:20260418-5a2882b-vllm0.19.0",
+      "name": "osworld-eval"
+    }
+  ],
+  "osworld_commit": "e8ba8fde29889ae7e4377f6f325d736818434a04",
+  "tag": "20260418-5a2882b-vllm0.19.0",
+  "vllm_version": "0.19.0"
+}
