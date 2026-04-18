@@ -163,6 +163,7 @@ run_eval() {
     --max-steps "${OSWORLD_MAX_STEPS:-15}" \
     --num-envs "${OSWORLD_NUM_ENVS:-1}"
   local sample_meta="${OSWORLD_SAMPLE_META:-${WORK_ROOT}/artifacts/manifests/qwen36_osworld_sample_seed36035_meta.json}"
+  export QWEN36_MAX_TOKENS="${QWEN36_MAX_TOKENS:-2048}"
   OSWORLD_HOME="${OSWORLD_HOME}" \
   RUN_ID="${RUN_ID}" \
   RESULT_DIR="${WORK_ROOT}/runs/${RUN_ID}" \

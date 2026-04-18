@@ -46,6 +46,16 @@ class ReproducibleImageSourceTests(unittest.TestCase):
         for token in ["TENSOR_PARALLEL_SIZE", "RESERVATION_NVME_ROOT", "/dev/shm", "HF_TOKEN", "--gdn-prefill-backend triton"]:
             self.assertIn(token, text)
 
+    def test_eval_script_serializes_vm_download_and_bounds_tokens(self):
+        text = (ROOT / "images/osworld-eval/run-osworld-eval.sh").read_text()
+        for token in [
+            "ensure_docker_vm_image",
+            "zipfile.ZipFile",
+            "Removing corrupt/incomplete OSWorld VM archive",
+            'export QWEN36_MAX_TOKENS="${QWEN36_MAX_TOKENS:-2048}"',
+        ]:
+            self.assertIn(token, text)
+
 
 if __name__ == "__main__":
     unittest.main()
