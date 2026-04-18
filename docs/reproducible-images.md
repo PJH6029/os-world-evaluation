@@ -106,7 +106,9 @@ Evaluation invocation:
 docker run --rm -it \
   -v /var/run/docker.sock:/var/run/docker.sock \
   --device /dev/kvm \
-  -v "$PWD/osworld-work:/workspace" \
+  -v "$PWD:$PWD" \
+  -w "$PWD" \
+  -e EVAL_WORK_ROOT="$PWD/osworld-evaluation" \
   -e OPENAI_BASE_URL=http://host.docker.internal:8000/v1 \
   -e OPENAI_API_KEY=EMPTY \
   -e RUN_ID=qwen36_repro_$(date -u +%Y%m%dT%H%M%SZ) \
