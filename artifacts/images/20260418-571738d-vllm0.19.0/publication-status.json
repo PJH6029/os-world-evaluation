@@ -1,24 +1,25 @@
 {
-  "tag": "20260418-571738d-vllm0.19.0",
-  "source_repository": "https://github.com/PJH6029/os-world-evaluation",
+  "blocker": null,
+  "checked_at_utc": "2026-04-18T00:10:52.161508+00:00",
   "images": [
     {
+      "authenticated_manifest_check": "passed",
+      "digest_ref": "ghcr.io/pjh6029/osworld-vllm-h200@sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
+      "github_visibility": "public",
       "name": "osworld-vllm-h200",
       "tag_ref": "ghcr.io/pjh6029/osworld-vllm-h200:20260418-571738d-vllm0.19.0",
-      "digest_ref": "ghcr.io/pjh6029/osworld-vllm-h200@sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
-      "github_visibility": "private",
-      "authenticated_manifest_check": "passed",
-      "unauthenticated_manifest_check": "failed: UNAUTHORIZED authentication required"
+      "unauthenticated_manifest_check": "passed"
     },
     {
+      "authenticated_manifest_check": "passed",
+      "digest_ref": "ghcr.io/pjh6029/osworld-eval@sha256:06ddeeaa8adecb7f0088be833f78505d4716520308690d4ea3a29446a891ae34",
+      "github_visibility": "public",
       "name": "osworld-eval",
       "tag_ref": "ghcr.io/pjh6029/osworld-eval:20260418-571738d-vllm0.19.0",
-      "digest_ref": "ghcr.io/pjh6029/osworld-eval@sha256:06ddeeaa8adecb7f0088be833f78505d4716520308690d4ea3a29446a891ae34",
-      "github_visibility": "private",
-      "authenticated_manifest_check": "passed",
-      "unauthenticated_manifest_check": "failed: UNAUTHORIZED authentication required"
+      "unauthenticated_manifest_check": "passed"
     }
   ],
-  "blocker": "Images were pushed and linked to the public source repository, but GHCR package visibility remains private. GitHub REST/GraphQL/gh API attempts to set package visibility returned 404; package visibility appears to require a GitHub Packages settings UI action or a token/API capability not available to this session.",
-  "manual_resolution": "Open each package settings page in GitHub and change Package visibility to Public, then rerun unauthenticated crane manifest or docker pull by digest."
+  "public_proof": "Unauthenticated crane manifest succeeded from builder pod debug-rsv-jeonghunpark-20260418-a9c7d4 using empty DOCKER_CONFIG.",
+  "source_repository": "https://github.com/PJH6029/os-world-evaluation",
+  "tag": "20260418-571738d-vllm0.19.0"
 }

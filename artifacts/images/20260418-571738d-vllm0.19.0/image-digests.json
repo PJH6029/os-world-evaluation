@@ -3,6 +3,7 @@
   "git_commit": "571738d",
   "images": [
     {
+      "base_image": "vllm/vllm-openai:v0.19.0@sha256:7a0f0fdd2771464b6976625c2b2d5dd46f566aa00fbc53eceab86ef50883da90",
       "digest": "sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
       "digest_ref": "ghcr.io/pjh6029/osworld-vllm-h200@sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
       "dockerfile": "images/vllm-h200/Dockerfile",
@@ -10,6 +11,7 @@
       "name": "osworld-vllm-h200"
     },
     {
+      "base_image": "python:3.12-slim-bookworm@sha256:d97792894a6a4162cae14da44542a83c75e56c77a27b92d58f3f83b7bc961292",
       "digest": "sha256:06ddeeaa8adecb7f0088be833f78505d4716520308690d4ea3a29446a891ae34",
       "digest_ref": "ghcr.io/pjh6029/osworld-eval@sha256:06ddeeaa8adecb7f0088be833f78505d4716520308690d4ea3a29446a891ae34",
       "dockerfile": "images/osworld-eval/Dockerfile",
