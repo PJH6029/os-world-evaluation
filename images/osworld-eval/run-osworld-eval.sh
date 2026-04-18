@@ -80,7 +80,7 @@ check_docker_runtime() {
   printf 'host-visible-check\n' >"${sentinel}"
   if ! docker run --rm -v "${WORK_ROOT}:${WORK_ROOT}:ro" busybox:1.36.1 test -f "${sentinel}" >/dev/null 2>&1; then
     log "ERROR: WORK_ROOT=${WORK_ROOT} is not visible to the host Docker daemon at the same absolute path."
-    log "Mount your workdir at the same path, e.g. -v "$PWD:$PWD" -e EVAL_WORK_ROOT="$PWD/osworld-evaluation", not -v "$PWD:/workspace"."
+    log "Mount your workdir at the same path, e.g. -v \"\$PWD:\$PWD\" -e EVAL_WORK_ROOT=\"\$PWD/osworld-evaluation\", not -v \"\$PWD:/workspace\"."
     exit 2
   fi
 }
