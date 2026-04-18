@@ -12,13 +12,14 @@ Commands:
   sample    Generate deterministic OSWorld sample manifests
   eval      Run OSWorld sampled evaluation against OPENAI_BASE_URL
   report    Validate run manifest, index trajectories, and generate report
+  smoke-one Generate a one-task meta file, then eval + report for that one task
   all       test + eval + report
 
-Required for eval/all:
+Required for eval/all/smoke-one:
   OPENAI_BASE_URL=http://host:port/v1
   OPENAI_API_KEY=EMPTY  # default is EMPTY
 
-Host requirements for eval/all:
+Host requirements for eval/all/smoke-one:
   - Docker socket mounted at /var/run/docker.sock
   - /dev/kvm mounted when using OSWorld Docker provider with KVM acceleration
 USAGE
@@ -26,7 +27,8 @@ USAGE
 
 SOURCE_ROOT="${EVAL_SOURCE_ROOT:-/opt/osworld-evaluation}"
 WORK_ROOT="${EVAL_WORK_ROOT:-/workspace/osworld-evaluation}"
-OSWORLD_HOME="${OSWORLD_HOME:-/opt/OSWorld}"
+BUNDLED_OSWORLD_HOME="${BUNDLED_OSWORLD_HOME:-/opt/OSWorld}"
+OSWORLD_HOME="${OSWORLD_HOME:-$WORK_ROOT/external/OSWorld}"
 RUN_ID="${RUN_ID:-qwen36_osworld_seed36035_$(date -u +%Y%m%dT%H%M%SZ)}"
 OPENAI_API_KEY="${OPENAI_API_KEY:-EMPTY}"
 QWEN36_MODEL="${QWEN36_MODEL:-Qwen/Qwen3.6-35B-A3B}"
@@ -40,9 +42,22 @@ prepare_workdir() {
   cd "${WORK_ROOT}"
 }
 
+ensure_osworld_home() {
+  if [ -x "${OSWORLD_HOME}/.venv/bin/python" ] && [ -f "${OSWORLD_HOME}/evaluation_examples/test_nogdrive.json" ]; then
+    return 0
+  fi
+  if [ ! -d "${BUNDLED_OSWORLD_HOME}" ]; then
+    log "ERROR: bundled OSWorld checkout missing: ${BUNDLED_OSWORLD_HOME}"
+    exit 2
+  fi
+  log "Preparing host-visible OSWorld checkout at ${OSWORLD_HOME} from ${BUNDLED_OSWORLD_HOME}"
+  mkdir -p "$(dirname "${OSWORLD_HOME}")"
+  rsync -a --delete "${BUNDLED_OSWORLD_HOME}/" "${OSWORLD_HOME}/"
+}
+
 check_endpoint() {
   if [ -z "${OPENAI_BASE_URL:-}" ]; then
-    log "ERROR: OPENAI_BASE_URL is required for eval/all"
+    log "ERROR: OPENAI_BASE_URL is required for eval/all/smoke-one"
     exit 2
   fi
   export OPENAI_API_KEY OPENAI_BASE_URL QWEN36_MODEL
@@ -68,23 +83,28 @@ set_cuda_library_path() {
   fi
 }
 
+sample_with_osworld_home() {
+  local sample_home="$1"
+  python3 scripts/sample_osworld_tasks.py --osworld-home "${sample_home}" --seed 36035 --validate-no-gdrive
+}
+
 run_tests() {
   prepare_workdir
-  set_cuda_library_path
   python3 -m compileall scripts overlays tests
   python3 -m unittest discover -s tests -v
-  python3 scripts/sample_osworld_tasks.py --osworld-home "${OSWORLD_HOME}" --seed 36035 --validate-no-gdrive
+  sample_with_osworld_home "${BUNDLED_OSWORLD_HOME}"
 }
 
 run_sample() {
   prepare_workdir
-  python3 scripts/sample_osworld_tasks.py --osworld-home "${OSWORLD_HOME}" --seed 36035 --validate-no-gdrive
+  sample_with_osworld_home "${BUNDLED_OSWORLD_HOME}"
 }
 
 run_eval() {
   prepare_workdir
   check_endpoint
   check_docker_runtime
+  ensure_osworld_home
   set_cuda_library_path
   python3 scripts/install_osworld_overlay.py --osworld-home "${OSWORLD_HOME}" --check-only || python3 scripts/install_osworld_overlay.py --osworld-home "${OSWORLD_HOME}" --force-managed
   python3 scripts/create_run_manifest.py \
@@ -98,10 +118,11 @@ run_eval() {
     --max-tokens "${QWEN36_MAX_TOKENS:-2048}" \
     --max-steps "${OSWORLD_MAX_STEPS:-15}" \
     --num-envs "${OSWORLD_NUM_ENVS:-1}"
+  local sample_meta="${OSWORLD_SAMPLE_META:-${WORK_ROOT}/artifacts/manifests/qwen36_osworld_sample_seed36035_meta.json}"
   OSWORLD_HOME="${OSWORLD_HOME}" \
   RUN_ID="${RUN_ID}" \
   RESULT_DIR="${WORK_ROOT}/runs/${RUN_ID}" \
-  SAMPLE_META="${WORK_ROOT}/artifacts/manifests/qwen36_osworld_sample_seed36035_meta.json" \
+  SAMPLE_META="${sample_meta}" \
   PYTHON_BIN="${OSWORLD_HOME}/.venv/bin/python" \
   OPENAI_BASE_URL="${OPENAI_BASE_URL}" \
   OPENAI_API_KEY="${OPENAI_API_KEY}" \
@@ -111,7 +132,7 @@ run_eval() {
 
 run_report() {
   prepare_workdir
-  RUN_ID="${RUN_ID}" python3 scripts/validate_run_manifest.py --run-manifest "artifacts/runs/${RUN_ID}/run_manifest.json"
+  python3 scripts/validate_run_manifest.py --run-manifest "artifacts/runs/${RUN_ID}/run_manifest.json"
   python3 scripts/index_trajectories.py \
     --results-dir "runs/${RUN_ID}" \
     --manifest artifacts/manifests/qwen36_osworld_sample_seed36035.json \
@@ -124,6 +145,22 @@ run_report() {
     --check-report-links
 }
 
+run_smoke_one() {
+  run_sample
+  python3 - <<'PY'
+import json, pathlib
+meta = json.loads(pathlib.Path('artifacts/manifests/qwen36_osworld_sample_seed36035_meta.json').read_text())
+domain = sorted(meta)[0]
+out = {domain: [meta[domain][0]]}
+path = pathlib.Path('artifacts/manifests/qwen36_osworld_smoke_meta.json')
+path.parent.mkdir(parents=True, exist_ok=True)
+path.write_text(json.dumps(out, indent=2, sort_keys=True) + '\n')
+print(path)
+PY
+  OSWORLD_SAMPLE_META="${WORK_ROOT}/artifacts/manifests/qwen36_osworld_smoke_meta.json" run_eval
+  run_report
+}
+
 cmd="${1:-help}"
 case "${cmd}" in
   help|-h|--help) usage ;;
@@ -131,6 +168,7 @@ case "${cmd}" in
   sample) run_sample ;;
   eval) run_sample; run_eval ;;
   report) run_report ;;
+  smoke-one) run_smoke_one ;;
   all) run_tests; run_eval; run_report ;;
   *) log "ERROR: unknown command: ${cmd}"; usage; exit 2 ;;
 esac
