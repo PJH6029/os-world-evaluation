@@ -12,6 +12,9 @@ TAG=""
 VLLM_VERSION="${VLLM_VERSION:-0.19.0}"
 OSWORLD_COMMIT="${OSWORLD_COMMIT:-e8ba8fde29889ae7e4377f6f325d736818434a04}"
 USE_FALLBACK=0
+VLLM_BASE_IMAGE="vllm/vllm-openai:v0.19.0@sha256:7a0f0fdd2771464b6976625c2b2d5dd46f566aa00fbc53eceab86ef50883da90"
+VLLM_FALLBACK_BASE_IMAGE="ghcr.io/pjh6029/snupi-prod-base:cu124-20260414"
+EVAL_BASE_IMAGE="python:3.12-slim-bookworm@sha256:d97792894a6a4162cae14da44542a83c75e56c77a27b92d58f3f83b7bc961292"
 
 usage() {
   cat <<'USAGE'
@@ -80,6 +83,7 @@ ghcr_login() {
 build_one() {
   local name="$1"
   local dockerfile="$2"
+  local base_image="$3"
   local image="$REGISTRY/$name:$TAG"
   local -a cmd=(buildctl --addr "$BUILDKIT_ADDR" build --frontend dockerfile.v0 --local context="$ROOT" --local dockerfile="$ROOT" --opt platform=linux/amd64 --opt filename="$dockerfile" --opt build-arg:BUILD_DATE="$BUILD_DATE" --opt build-arg:VCS_REF="$VCS_REF" --opt build-arg:VLLM_VERSION="$VLLM_VERSION" --opt build-arg:OSWORLD_COMMIT="$OSWORLD_COMMIT")
   if [ "$PUSH" -eq 1 ]; then
@@ -94,7 +98,7 @@ build_one() {
   else
     digest=""
   fi
-  printf '%s\t%s\t%s\t%s\n' "$name" "$image" "$digest" "$dockerfile" >>"$DIGEST_DIR/.images.tsv"
+  printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$image" "$digest" "$dockerfile" "$base_image" >>"$DIGEST_DIR/.images.tsv"
 }
 
 ghcr_login
@@ -102,10 +106,12 @@ rm -f "$DIGEST_DIR/.images.tsv"
 if [ "$TARGET" = vllm-h200 ] || [ "$TARGET" = all ]; then
   df="images/vllm-h200/Dockerfile"
   [ "$USE_FALLBACK" -eq 0 ] || df="images/vllm-h200/Dockerfile.snupi-base-fallback"
-  build_one osworld-vllm-h200 "$df"
+  base="$VLLM_BASE_IMAGE"
+  [ "$USE_FALLBACK" -eq 0 ] || base="$VLLM_FALLBACK_BASE_IMAGE"
+  build_one osworld-vllm-h200 "$df" "$base"
 fi
 if [ "$TARGET" = osworld-eval ] || [ "$TARGET" = all ]; then
-  build_one osworld-eval images/osworld-eval/Dockerfile
+  build_one osworld-eval images/osworld-eval/Dockerfile "$EVAL_BASE_IMAGE"
 fi
 
 if [ "$DRY_RUN" -eq 0 ]; then
@@ -113,8 +119,8 @@ if [ "$DRY_RUN" -eq 0 ]; then
 import json, sys, pathlib
 rows=[]
 for line in pathlib.Path(sys.argv[1]).read_text().splitlines():
-    name, image, digest, dockerfile = line.split('\t')
-    rows.append({"name": name, "image": image, "digest": digest, "digest_ref": f"{image.split(':',1)[0]}@{digest}" if digest else None, "dockerfile": dockerfile})
+    name, image, digest, dockerfile, base_image = line.split('\t')
+    rows.append({"name": name, "image": image, "digest": digest, "digest_ref": f"{image.split(':',1)[0]}@{digest}" if digest else None, "dockerfile": dockerfile, "base_image": base_image})
 out={"tag": sys.argv[3], "git_commit": sys.argv[4], "build_timestamp": sys.argv[5], "vllm_version": sys.argv[6], "osworld_commit": sys.argv[7], "images": rows}
 pathlib.Path(sys.argv[2]).write_text(json.dumps(out, indent=2, sort_keys=True)+"\n")
 print(sys.argv[2])
