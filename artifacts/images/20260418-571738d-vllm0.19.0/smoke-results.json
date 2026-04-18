@@ -8,10 +8,10 @@
     "note": "Both images pushed; final public verification later performed from replacement builder pod.",
     "result": "passed"
   },
-  "checked_at_utc": "2026-04-18T00:10:52.161508+00:00",
+  "checked_at_utc": "2026-04-18T00:30:33.101324+00:00",
   "eval_image_smoke": {
-    "reason": "Full local-eval image smoke would pull the large image and run host Docker/KVM; source tests, dry-run, and public digest proof passed. Previous non-image OSWorld live eval completed separately.",
-    "result": "not_run_full_container"
+    "reason": "User constrained this pass to builder-pod/BuildKit workflow. Full local Docker/KVM eval-image smoke remains a runtime follow-up for a host that chooses to run the public image.",
+    "result": "source_harness_and_buildkit_proof_only"
   },
   "public_manifest_checks": {
     "builder_pod": "debug-rsv-jeonghunpark-20260418-a9c7d4",
@@ -20,8 +20,8 @@
     "vllm_manifest_bytes": 6020
   },
   "serving_smoke": {
-    "reason": "H200 reservation smoke requires scheduling a pod with this image; plan allows command validation when reservation is unavailable, but this remains a follow-up for runtime confidence.",
-    "result": "not_run_from_final_image"
+    "reason": "User explicitly forbade creating a new pod. Existing builder pod has H200 but cannot run the final image as a container; Kubernetes scheduling of an extra final-image smoke pod was deleted per instruction. Public digest proof and build-source checks passed.",
+    "result": "builder_pod_public_manifest_proof_only"
   },
   "shell_syntax": {
     "command": "bash -n scripts/images/build_with_buildkit.sh scripts/images/smoke_vllm_image.sh scripts/images/smoke_osworld_eval_image.sh images/vllm-h200/serve-vllm.sh images/osworld-eval/run-osworld-eval.sh",
@@ -32,5 +32,6 @@
     "result": "passed",
     "tests": 7
   },
-  "tag": "20260418-571738d-vllm0.19.0"
+  "tag": "20260418-571738d-vllm0.19.0",
+  "user_runtime_constraint": "Do not create new pods; use builder pod and background BuildKit service only."
 }
