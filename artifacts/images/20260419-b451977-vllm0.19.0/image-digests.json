@@ -1,0 +1,26 @@
+{
+  "build_timestamp": "2026-04-18T17:52:56.945147Z",
+  "compatible_serving_image": {
+    "digest": "sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
+    "digest_ref": "ghcr.io/pjh6029/osworld-vllm-h200@sha256:d6d58392b9a1dd23a30a20123b88483f0cfd8210226b9e21e43e7855ae9d3b1a",
+    "image": "ghcr.io/pjh6029/osworld-vllm-h200:20260418-571738d-vllm0.19.0",
+    "name": "osworld-vllm-h200"
+  },
+  "git_commit": "b451977f6a7c23d8134c3328132b2bb0c7bc5698",
+  "images": [
+    {
+      "base_image": "python:3.12-slim-bookworm@sha256:d97792894a6a4162cae14da44542a83c75e56c77a27b92d58f3f83b7bc961292",
+      "digest": "sha256:cb9467e8116b240fdbb2b8d88f5d1d1966c51f100d9623ad1ecf099ae7b799ba",
+      "digest_ref": "ghcr.io/pjh6029/osworld-eval@sha256:cb9467e8116b240fdbb2b8d88f5d1d1966c51f100d9623ad1ecf099ae7b799ba",
+      "dockerfile": "images/osworld-eval/Dockerfile",
+      "image": "ghcr.io/pjh6029/osworld-eval:20260419-b451977-vllm0.19.0",
+      "name": "osworld-eval"
+    }
+  ],
+  "notes": [
+    "Rebuilt eval image to default QWEN36_MAX_TOKENS=2048 in the entrypoint; serving image unchanged."
+  ],
+  "osworld_commit": "e8ba8fde29889ae7e4377f6f325d736818434a04",
+  "tag": "20260419-b451977-vllm0.19.0",
+  "vllm_version": "0.19.0"
+}
