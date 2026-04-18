@@ -108,6 +108,41 @@ run_sample() {
   sample_with_osworld_home "${BUNDLED_OSWORLD_HOME}"
 }
 
+
+ensure_docker_vm_image() {
+  if [ "${OSWORLD_PROVIDER:-docker}" != "docker" ]; then
+    return 0
+  fi
+  ensure_osworld_home
+  local vm_dir="${OSWORLD_HOME}/docker_vm_data"
+  local zip_path="${vm_dir}/Ubuntu.qcow2.zip"
+  local qcow_path="${vm_dir}/Ubuntu.qcow2"
+  mkdir -p "${vm_dir}"
+  if [ -f "${zip_path}" ] && [ ! -f "${qcow_path}" ]; then
+    if ! "${OSWORLD_HOME}/.venv/bin/python" - <<PYZIP
+import sys, zipfile
+path = "${zip_path}"
+try:
+    with zipfile.ZipFile(path) as zf:
+        bad = zf.testzip()
+except Exception:
+    sys.exit(1)
+sys.exit(0 if bad is None else 1)
+PYZIP
+    then
+      log "Removing corrupt/incomplete OSWorld VM archive: ${zip_path}"
+      rm -f "${zip_path}"
+    fi
+  fi
+  log "Ensuring OSWorld Docker VM image exists at host-visible path ${vm_dir}"
+  (cd "${OSWORLD_HOME}" && "${OSWORLD_HOME}/.venv/bin/python" - <<'PYVM'
+from desktop_env.providers.docker.manager import DockerVMManager
+path = DockerVMManager().get_vm_path("Ubuntu", "us-east-1")
+print(path)
+PYVM
+  )
+}
+
 run_eval() {
   prepare_workdir
   check_endpoint
@@ -115,6 +150,7 @@ run_eval() {
   ensure_osworld_home
   set_cuda_library_path
   python3 scripts/install_osworld_overlay.py --osworld-home "${OSWORLD_HOME}" --check-only || python3 scripts/install_osworld_overlay.py --osworld-home "${OSWORLD_HOME}" --force-managed
+  ensure_docker_vm_image
   python3 scripts/create_run_manifest.py \
     --run-id "${RUN_ID}" \
     --serving-backend "${SERVING_BACKEND:-vllm}" \
